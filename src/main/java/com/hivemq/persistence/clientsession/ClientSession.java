@@ -74,8 +74,13 @@ public class ClientSession {
     }
 
     public @NotNull ClientSession deepCopyWithoutPayload() {
-        return new ClientSession(this.connected,
+        return new ClientSession(
+                this.connected,
                 this.sessionExpiryInterval,
-                this.getWillPublish().deepCopyWithoutPayload());
+                this.willPublish != null ? this.willPublish.deepCopyWithoutPayload() : null);
+    }
+
+    public @NotNull ClientSession copyWithoutWill() {
+        return new ClientSession(this.connected, this.sessionExpiryInterval, null);
     }
 }
