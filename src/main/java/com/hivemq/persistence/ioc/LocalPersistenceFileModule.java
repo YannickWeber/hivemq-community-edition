@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.hivemq.persistence.ioc;
 
 import com.google.inject.Injector;
@@ -21,7 +22,10 @@ import com.hivemq.configuration.service.InternalConfigurations;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
 import com.hivemq.extension.sdk.api.annotations.Nullable;
 import com.hivemq.migration.meta.PersistenceType;
+import com.hivemq.persistence.ioc.provider.local.ClientSessionLocalProvider;
+import com.hivemq.persistence.local.ClientSessionLocalPersistence;
 import com.hivemq.persistence.local.xodus.RetainedMessageXodusLocalPersistence;
+import com.hivemq.persistence.local.xodus.clientsession.ClientSessionXodusLocalPersistence;
 import com.hivemq.persistence.payload.PublishPayloadLocalPersistence;
 import com.hivemq.persistence.payload.PublishPayloadXodusLocalPersistence;
 import com.hivemq.persistence.retained.RetainedMessageLocalPersistence;
@@ -56,6 +60,10 @@ class LocalPersistenceFileModule extends SingletonModule<Class<LocalPersistenceF
                     RetainedMessageXodusLocalPersistence.class,
                     null);
         }
+
+        bindLocalPersistence(ClientSessionLocalPersistence.class,
+                ClientSessionXodusLocalPersistence.class,
+                ClientSessionLocalProvider.class);
 
         if (payloadPersistenceType == PersistenceType.FILE_NATIVE ||
                 retainedPersistenceType == PersistenceType.FILE_NATIVE) {

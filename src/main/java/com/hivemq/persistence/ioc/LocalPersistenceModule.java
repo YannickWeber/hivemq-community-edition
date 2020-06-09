@@ -32,15 +32,14 @@ import com.hivemq.persistence.clientqueue.ClientQueuePersistence;
 import com.hivemq.persistence.clientqueue.ClientQueuePersistenceImpl;
 import com.hivemq.persistence.clientqueue.ClientQueueXodusLocalPersistence;
 import com.hivemq.persistence.clientsession.*;
-import com.hivemq.persistence.ioc.provider.local.ClientSessionLocalProvider;
 import com.hivemq.persistence.ioc.provider.local.ClientSessionSubscriptionLocalProvider;
 import com.hivemq.persistence.ioc.provider.local.IncomingMessageFlowPersistenceLocalProvider;
 import com.hivemq.persistence.local.ClientSessionLocalPersistence;
 import com.hivemq.persistence.local.ClientSessionSubscriptionLocalPersistence;
 import com.hivemq.persistence.local.IncomingMessageFlowLocalPersistence;
+import com.hivemq.persistence.local.memory.ClientSessionMemoryLocalPersistence;
 import com.hivemq.persistence.local.memory.RetainedMessageMemoryLocalPersistence;
 import com.hivemq.persistence.local.xodus.clientsession.ClientSessionSubscriptionXodusLocalPersistence;
-import com.hivemq.persistence.local.xodus.clientsession.ClientSessionXodusLocalPersistence;
 import com.hivemq.persistence.payload.PublishPayloadLocalPersistence;
 import com.hivemq.persistence.payload.PublishPayloadMemoryLocalPersistence;
 import com.hivemq.persistence.payload.PublishPayloadPersistence;
@@ -82,11 +81,9 @@ class LocalPersistenceModule extends SingletonModule<Class<LocalPersistenceModul
             bindLocalPersistence(RetainedMessageLocalPersistence.class,
                     RetainedMessageMemoryLocalPersistence.class,
                     null);
+            bindLocalPersistence(ClientSessionLocalPersistence.class, ClientSessionMemoryLocalPersistence.class, null);
         }
 
-        bindLocalPersistence(ClientSessionLocalPersistence.class,
-                ClientSessionXodusLocalPersistence.class,
-                ClientSessionLocalProvider.class);
         bindLocalPersistence(ClientSessionSubscriptionLocalPersistence.class,
                 ClientSessionSubscriptionXodusLocalPersistence.class,
                 ClientSessionSubscriptionLocalProvider.class);
