@@ -18,15 +18,18 @@ package com.hivemq.persistence;
 
 import com.hivemq.extension.sdk.api.annotations.Immutable;
 import com.hivemq.extension.sdk.api.annotations.NotNull;
+import com.hivemq.util.ObjectMemoryEstimation;
 
 /**
  * @author Lukas Brandl
  */
 @Immutable
-public class PersistenceEntry<T> {
+public class PersistenceEntry<T extends Sizable> implements Sizable {
 
     private final long timestamp;
     private final @NotNull T object;
+
+    private volatile int sizeInMemory = SIZE_NOT_CALCULATED;
 
     public PersistenceEntry(@NotNull final T object, final long timestamp) {
         this.timestamp = timestamp;
@@ -46,5 +49,24 @@ public class PersistenceEntry<T> {
     @Override
     public String toString() {
         return object.toString();
+    }
+
+    @Override
+    public int getEstimatedSize() {
+
+        if (sizeInMemory != SIZE_NOT_CALCULATED){
+            return sizeInMemory;
+        }
+
+        int size = ObjectMemoryEstimation.objectShellSize();
+        size += ObjectMemoryEstimation.longSize(); // timestamp
+        size += ObjectMemoryEstimation.intSize(); // sizeInMemory
+
+        // contained object
+        size += ObjectMemoryEstimation.objectRefSize();
+        size += object.getEstimatedSize();
+
+        sizeInMemory = size;
+        return sizeInMemory;
     }
 }
